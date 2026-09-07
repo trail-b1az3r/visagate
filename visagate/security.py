@@ -155,9 +155,15 @@ def _save_lockout_state(state):
     with open(tmp, "w") as f:
         json.dump(state, f)
     os.replace(tmp, LOCKOUT_STATE_FILE)
+    # state on tmpfs must survive a root-triggered enable: root-created
+    # 0o600 files would be unreadable by the unprivileged PAM user (who
+    # owns and runs visagate-auth at the lock screen) and make is_locked_out
+    # trace back to password fallback. Match the 0o1777 idiom in logging_setup.
     try:
-        os.chmod(LOCKOUT_STATE_FILE, 0o600)
-    except PermissionError:
+        os.chmod(LOCKOUT_DIR, 0o1777)
+        for path in (LOCKOUT_STATE_FILE, LOCKOUT_LOCK_FILE):
+            os.chmod(path, 0o666)
+    except OSError:
         pass
 
 
