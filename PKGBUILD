@@ -1,6 +1,6 @@
 # Maintainer: Ray0rf1re mason@mcgugan.org
 pkgname=visagate
-pkgver=0.2.4
+pkgver=0.2.6
 pkgrel=1
 pkgdesc="Face unlock (RGB+IR) for Logitech webcams via PAM, Howdy-style"
 arch=('any')
