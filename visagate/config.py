@@ -158,8 +158,12 @@ def ensure_dirs():
 def _read_pin_file():
     if not os.path.exists(PIN_FILE):
         return {"pin_hash": None, "pin_salt": None}
-    with open(PIN_FILE) as f:
-        data = json.load(f)
+    try:
+        with open(PIN_FILE) as f:
+            data = json.load(f)
+    except PermissionError:
+        # 0600 root-only; lock-screen PAM runs as the user and never needs it.
+        return {"pin_hash": None, "pin_salt": None}
     return {"pin_hash": data.get("pin_hash"), "pin_salt": data.get("pin_salt")}
 
 
